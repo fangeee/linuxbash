@@ -39,25 +39,8 @@ https://www.cnblogs.com/yanglang/p/11056924.html
 win下杀死服务
 Sc delete 服务名
 
-
-
-
-
-
-centos7安装mongod 新增管理员用户之后mongod无法启动解决
-报错：
-|
-解决：
-|
-  sudo chown -R mongod:mongod /var/lib/mongo
- sudo chown -R mongod:mongod /var/log/mongodb/mongod.log
- sudo chown mongod:mongod /tmp/*.sock        
-就是查看这三个文件、文件夹权限问题，注意要在conf中查看是不是这三个路径：
-
-主要就是查看dppath和log权限是不是mongod用户的，还有一个
-
-
-
+win配置git+vscode
+https://blog.csdn.net/toyijiu/article/details/87828373
 
 windows上传下载文件到centos服务器
 https://www.cnblogs.com/pcyy/p/7568820.html
