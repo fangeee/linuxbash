@@ -1,0 +1,92 @@
+Linux常用命令
+centos7 防火墙设置
+
+查看防火墙状态
+systemctl status firewalld
+开启防火墙
+systemctl start firewalld
+关闭防火墙
+systemctl stop firewalld
+查看当前firewall状态
+firewall-cmd --state
+重启firewall
+firewall-cmd --reload
+禁止开机启动
+systemctl disable firewalld.service 
+
+firewall-cmd --list-ports
+开启端口
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+查看所有开放端口
+netstat -tlunp
+
+查看进程
+ps -elf
+
+
+
+xshell工具
+yum -y install lrzsz
+上传文件命令：rz
+
+windows下设置mongodb密码登录
+https://www.cnblogs.com/qk2014/p/9253506.html
+
+Windows server 2016 配置iis
+https://www.cnblogs.com/yanglang/p/11056924.html
+
+win下杀死服务
+Sc delete 服务名
+
+
+
+
+
+
+centos7安装mongod 新增管理员用户之后mongod无法启动解决
+报错：
+|
+解决：
+|
+  sudo chown -R mongod:mongod /var/lib/mongo
+ sudo chown -R mongod:mongod /var/log/mongodb/mongod.log
+ sudo chown mongod:mongod /tmp/*.sock        
+就是查看这三个文件、文件夹权限问题，注意要在conf中查看是不是这三个路径：
+
+主要就是查看dppath和log权限是不是mongod用户的，还有一个
+
+
+
+
+windows上传下载文件到centos服务器
+https://www.cnblogs.com/pcyy/p/7568820.html
+
+
+
+服务器集群部署：
+https://www.jianshu.com/p/3af1bc33fa6b
+
+服务器之间传输大文件
+https://blog.csdn.net/qq_30262201/article/details/89931142
+http://www.ttlsa.com/web/let-infotify-rsync-fast/
+https://rsync.samba.org/download.html
+
+mongodb副本集部署
+https://blog.csdn.net/pengjunlee/article/details/84101732
+
+centos7部署nginx
+https://blog.csdn.net/zhangbeizhen18/article/details/106872318
+
+
+centos7 yum 命令安装Zabbix server
+https://www.cnblogs.com/mefj/p/13236695.html
+http://blog.yixao.net/soft/15800.html
+https://www.cnblogs.com/architectforest/p/12917627.html -配置agent
+https://mirrors.tuna.tsinghua.edu.cn/zabbix/zabbix/5.2/rhel/7/x86_64/
+配置mysql可以被远程访问，mysql8.0有变更
+
+
+
+
+ansible
