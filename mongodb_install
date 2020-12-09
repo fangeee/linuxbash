@@ -6,22 +6,49 @@ if [ $(id -u) != "0" ]; then
 fi
 read -p "请输入tar包所在完整路径：" tarpath
 read -p "请输入mongodb安装上级目录目录路径：" mongodbpath
-tar -zxvf $tarpath/mongodb-linux-x86_64-4.0.12.tgz
-mv mongodb-linux-x86_64-4.0.12 $mongodbpath/mongodb
+read -p "请输入mongodbtar包完整名（不包含tar）：" mongodbtar
+
+
+tar -zxvf $tarpath/''$mongodbtar'.tgz'
+mv $mongodbtar $mongodbpath/mongodb
 mkdir -p $mongodbpath/mongodb/log $mongodbpath/mongodb/data/db
-touch $mongodbpath/mongodb/log/mongodb.log $mongodbpath/mongodb/bin/mongodb.conf 
-echo "dbpath=$mongodbpath/mongodb/data/db">$mongodbpath/mongodb/bin/mongodb.conf
-echo "logpath=$mongodbpath/mongodb/log/mongodb.log">>$mongodbpath/mongodb/bin/mongodb.conf
-echo "logappend=true">>$mongodbpath/mongodb/bin/mongodb.conf
-echo "journal=true">>$mongodbpath/mongodb/bin/mongodb.conf
-echo "fork=true">>$mongodbpath/mongodb/bin/mongodb.conf
-echo "bind_ip=0.0.0.0">>$mongodbpath/mongodb/bin/mongodb.conf
-echo "auth=false">>$mongodbpath/mongodb/bin/mongodb.conf
-echo "export MONGODB_HOME=$mongodbpath/mongodb">>/etc/profile
-echo "export PATH=$PATH:$MONGODB_HOME/bin">>/etc/profile
+touch $mongodbpath/mongodb/log/mongodb.log $mongodbpath/mongodb/bin/mongodb.conf /lib/systemd/system/mongodb.service
+
+cat >$mongodbpath/mongodb/bin/mongodb.conf<<EOF
+dbpath=$mongodbpath/mongodb/data/db
+logpath=$mongodbpath/mongodb/log/mongodb.log
+logappend=true
+journal=true
+fork=true
+bind_ip=0.0.0.0
+EOF
+
+cat >/etc/profile<<EOF
+export MONGODB_HOME=$mongodbpath/mongodb
+export PATH=$PATH:$MONGODB_HOME/bin
+EOF
+
 source /etc/profile
-$mongodbpath/mongodb/bin/mongod --config $mongodbpath/mongodb/bin/mongodb.conf
 
+cat >/lib/systemd/system/mongodb.service<<EOF
+[Unit]
+Description=mongodb
+After=network.target remote-fs.target nss-lookup.target
+[Service]
+Type=forking
+ExecStart=/$mongodbpath/mongodb/bin/mongod --config /$mongodbpath/mongodb/bin/mongodb.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/$mongodbpath/mongodb/bin/mongod --shutdown --config /$mongodbpath/mongodb/bin/mongodb.conf
+PrivateTmp=true 
+[Install]
+WantedBy=multi-user.target
+EOF
 
+systemctl enable mongodb
+systemctl start mongodb
+systemctl status mongodb
 
+firewall-cmd --zone=public --add-port=27017/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --permanent --query-port=27017/tcp
 
